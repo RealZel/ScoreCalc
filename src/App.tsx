@@ -1,17 +1,18 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, StyleSheet, StatusBar, View, Platform } from 'react-native';
+import { Text, StyleSheet, StatusBar } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { HomeScreen, ChartsScreen, SettingsScreen, LanguageSelectionScreen } from './screens';
 import { AppProvider, useApp } from './context/AppContext';
 
 const Tab = createBottomTabNavigator();
 
 const SafeAreaWrapper: React.FC<{children: React.ReactNode}> = ({ children }) => (
-  <View style={styles.safeArea}>
+  <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
     <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" />
     {children}
-  </View>
+  </SafeAreaView>
 );
 
 const HomeScreenWrapper = () => <SafeAreaWrapper><HomeScreen /></SafeAreaWrapper>;
@@ -82,9 +83,11 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
+    <SafeAreaProvider>
+      <AppProvider>
+        <AppContent />
+      </AppProvider>
+    </SafeAreaProvider>
   );
 }
 
@@ -92,7 +95,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   tabBar: {
     backgroundColor: '#FFFFFF',

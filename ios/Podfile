@@ -30,5 +30,32 @@ target 'ScoreCalcApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Copy hermesvm dSYM into archive so App Store Connect validation passes
+    main_project = installer.aggregate_targets
+      .flat_map { |t| t.user_project }
+      .uniq { |p| p.path }
+      .first
+    main_target = main_project.targets.find { |t| t.name == 'ScoreCalcApp' }
+
+    if main_target
+      phase_name = 'Copy Hermes dSYM'
+      unless main_target.shell_script_build_phases.any? { |p| p.name == phase_name }
+        phase = main_target.new_shell_script_build_phase(phase_name)
+        phase.shell_script = <<~SCRIPT
+          if [ "${CONFIGURATION}" = "Release" ] && [ -n "${DWARF_DSYM_FOLDER_PATH}" ]; then
+            HERMES_DSYM="${PODS_ROOT}/hermes-engine/destroot/Library/Frameworks/universal/hermesvm.xcframework/ios-arm64/hermesvm.framework.dSYM"
+            if [ ! -d "${HERMES_DSYM}" ]; then
+              dsymutil "${PODS_ROOT}/hermes-engine/destroot/Library/Frameworks/universal/hermesvm.xcframework/ios-arm64/hermesvm.framework/hermesvm" -o "${HERMES_DSYM}"
+            fi
+            if [ -d "${HERMES_DSYM}" ]; then
+              cp -r "${HERMES_DSYM}" "${DWARF_DSYM_FOLDER_PATH}/hermesvm.framework.dSYM"
+              echo "Copied hermesvm.framework.dSYM to ${DWARF_DSYM_FOLDER_PATH}"
+            fi
+          fi
+        SCRIPT
+      end
+      main_project.save
+    end
   end
 end
