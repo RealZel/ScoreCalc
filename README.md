@@ -81,6 +81,10 @@ npm run ios
 
 This app is for educational and screening support purposes only and does not replace professional medical diagnosis.
 
+## Privacy Policy
+
+- Repository page: `privacy-policy.md`
+
 ## License
 
 Proprietary - All rights reserved.
