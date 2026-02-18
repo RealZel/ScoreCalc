@@ -1,101 +1,86 @@
 # ScoreCalc - Child Growth Calculator
 
-A React Native mobile application for tracking and evaluating child physical development using WHO (0-24 months) and CDC (2-20 years) growth standards.
+ScoreCalc is a React Native mobile app for tracking and evaluating child growth.
+The app is available for **Android** and **iOS**.
+
+## Description (EN)
+
+ScoreCalc is a practical child growth assessment app designed for parents, pediatricians, and healthcare teams. It helps evaluate physical development using WHO growth references and presents results in a clear, clinical-friendly format.
+
+With ScoreCalc, you can enter a child's birth date, measurement date, sex, height, weight, and optional head circumference. The app calculates key indicators:
+
+- Length/height-for-age
+- Weight-for-age
+- Weight-for-length (when applicable)
+- Head circumference-for-age (when applicable)
+- BMI-for-age (WHO 5-19 reference)
+
+For each indicator, ScoreCalc provides z-scores and percentiles, plus color-coded interpretation to quickly highlight normal values, potential undernutrition, and risk of excess weight. BMI status is also classified by percentile ranges for easier screening.
+
+## Описание (RU)
+
+ScoreCalc — это практичное приложение для оценки физического развития детей, созданное для родителей, педиатров и медицинских специалистов. Оно помогает оценивать развитие по референсам роста ВОЗ и показывает результаты в понятном, клинически удобном формате.
+
+В ScoreCalc можно ввести дату рождения ребёнка, дату измерения, пол, рост, вес и (при необходимости) окружность головы. Приложение рассчитывает ключевые показатели:
+
+- Длина/рост по возрасту
+- Масса тела по возрасту
+- Масса тела к длине/росту (при применимости)
+- Окружность головы по возрасту (при применимости)
+- ИМТ по возрасту (референс ВОЗ 5-19 лет)
+
+Для каждого показателя ScoreCalc показывает z-score и перцентили, а также цветовую интерпретацию, чтобы быстро выделять нормальные значения, возможный дефицит питания и риск избыточной массы тела.
+
+## Descripción (ES)
+
+ScoreCalc es una aplicación práctica para la evaluación del crecimiento infantil, diseñada para padres, pediatras y equipos de salud. Ayuda a evaluar el desarrollo físico usando referencias de crecimiento de la OMS y presenta los resultados en un formato claro y útil para el entorno clínico.
+
+Con ScoreCalc, puedes ingresar la fecha de nacimiento del niño, la fecha de medición, el sexo, la talla, el peso y, de forma opcional, el perímetro cefálico. La app calcula indicadores clave:
+
+- Longitud/talla para la edad
+- Peso para la edad
+- Peso para la longitud/talla (cuando aplica)
+- Perímetro cefálico para la edad (cuando aplica)
+- IMC para la edad (referencia OMS 5-19 años)
+
+Para cada indicador, ScoreCalc proporciona puntuaciones z y percentiles, además de una interpretación con código de colores para identificar rápidamente valores normales, posible desnutrición y riesgo de exceso de peso.
 
 ## Features
 
-### Core Functionality
-- **Physical Development Assessment**: Calculate z-scores and percentiles for:
-  - Height/Length for age (0-24 months)
-  - Weight for age (0-24 months)
-  - Weight for length (45-110 cm)
-  - Head circumference for age (0-24 months)
-  - **BMI-for-age (2-20 years)** - CDC standards with sex-specific percentile categories
-
-### BMI Categories (CDC, ages 2-20)
-- **Underweight**: < 5th percentile
-- **Healthy Weight**: 5th to < 85th percentile
-- **Overweight**: 85th to < 95th percentile
-- **Obesity**: ≥ 95th percentile
-- **Severe Obesity**: ≥ 120% of 95th percentile or BMI ≥ 35
-
-### Growth Charts
-- Interactive growth curve visualization
-- **Age range zoom**: View full 0-24 months or detailed 6-month intervals
-- Visual comparison with WHO reference curves
-- Child's measurement point display on charts
-
-### Multi-Language Support
-- English
-- Russian (Русский)
-- Spanish (Español)
-
-### Unit System Support
-- Metric (cm, kg)
-- Imperial (ft/in, lb)
-
-## Version History
-
-### v2.3.0 (Current)
-- Added CDC BMI-for-age calculation for children 2-20 years
-- BMI percentile categories with color-coded indicators
-- Improved chart zoom with age range selection (0-6m, 6-12m, etc.)
-- Better axis visibility when viewing detailed ranges
-
-### v2.2.0
-- Added Spanish language support
-- Pinch-to-zoom for growth charts
-- Compact horizontal legend
-- WHO disclaimer in terms of use
-
-### v2.1.0
-- Bug fixes for charts and measurements
-
-### v2.0.0
-- WHO growth standards implementation
-- Multiple measurement indicators
-
-## Technical Stack
-
-- **Framework**: React Native 0.83.1
-- **Language**: TypeScript
-- **Navigation**: React Navigation (Bottom Tabs)
-- **Charts**: react-native-chart-kit, react-native-svg
-- **Date Picker**: react-native-date-picker
-- **Storage**: @react-native-async-storage/async-storage
+- WHO-based child growth assessment
+- Z-score and percentile calculation
+- Color-coded interpretation
+- Multi-language support (EN / RU / ES)
+- Metric and imperial units
+- Interactive growth charts
 
 ## Data Sources
 
-- **WHO Child Growth Standards** (0-24 months): [WHO Growth Charts](https://www.who.int/tools/child-growth-standards)
-- **CDC Growth Charts** (2-20 years BMI): [CDC Growth Charts](https://www.cdc.gov/growthcharts/)
-- LMS method for z-score calculation
+- WHO Child Growth Standards (0-24 months): https://www.who.int/tools/child-growth-standards
+- WHO Growth Reference Data for 5-19 years (BMI-for-age): https://www.who.int/tools/growth-reference-data-for-5to19-years/indicators/bmi-for-age
 
-## Building
+## Tech Stack
 
-### Prerequisites
-- Node.js 18+
-- Java JDK 17
-- Android SDK
+- React Native 0.83.1
+- TypeScript
+- React Navigation
+- react-native-chart-kit / react-native-svg
+- react-native-date-picker
+- @react-native-async-storage/async-storage
 
-### Development
+## Build
+
 ```sh
 npm install
 npm start
 npm run android
+npm run ios
 ```
-
-### Release APK
-```sh
-cd android
-./gradlew assembleRelease
-```
-
-The APK will be in: `android/app/build/outputs/apk/release/app-release.apk`
 
 ## Disclaimer
 
-This application is for educational and informational purposes only. It is NOT intended to replace professional medical advice. The application is NOT affiliated with WHO or CDC. Always consult healthcare professionals for medical decisions.
+This app is for educational and screening support purposes only and does not replace professional medical diagnosis.
 
 ## License
 
-Proprietary - All rights reserved
+Proprietary - All rights reserved.

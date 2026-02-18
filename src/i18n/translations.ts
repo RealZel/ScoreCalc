@@ -145,14 +145,17 @@ By using this application, you signify your acceptance of these terms. If you do
     childMeasurement: 'Your child',
     headCircOptional: 'Head circumference (optional)',
     
-    // BMI Categories (CDC)
+    // BMI Categories (Percentiles)
     bmiForAge: 'BMI-for-Age',
+    bmiPronouncedDeficit: 'Pronounced weight deficit',
+    bmiNormalWeight: 'Normal weight',
+    bmiOverweightRisk: 'Risk of overweight',
     bmiUnderweight: 'Underweight',
     bmiHealthy: 'Healthy weight',
     bmiOverweight: 'Overweight',
     bmiObesity: 'Obesity',
     bmiSevereObesity: 'Severe obesity',
-    bmiAvailableFrom2: 'BMI-for-age is calculated for children aged 2-20 years',
+    bmiAvailableFrom2: 'BMI-for-age is calculated for children aged 5-19 years',
   },
   ru: {
     // Language Selection
@@ -300,14 +303,17 @@ By using this application, you signify your acceptance of these terms. If you do
     childMeasurement: 'Ваш ребёнок',
     headCircOptional: 'Окружность головы (опционально)',
     
-    // BMI Categories (CDC)
+    // BMI Categories (Перцентили)
     bmiForAge: 'ИМТ по возрасту',
+    bmiPronouncedDeficit: 'Выраженный дефицит массы тела',
+    bmiNormalWeight: 'Нормальная масса тела',
+    bmiOverweightRisk: 'Риск избыточной массы тела',
     bmiUnderweight: 'Дефицит массы тела',
     bmiHealthy: 'Нормальный вес',
     bmiOverweight: 'Избыточный вес',
     bmiObesity: 'Ожирение',
     bmiSevereObesity: 'Тяжёлое ожирение',
-    bmiAvailableFrom2: 'ИМТ по возрасту рассчитывается для детей от 2 до 20 лет',
+    bmiAvailableFrom2: 'ИМТ по возрасту рассчитывается для детей от 5 до 19 лет',
   },
   es: {
     // Language Selection
@@ -455,14 +461,17 @@ Al usar esta aplicación, usted acepta estos términos. Si no está de acuerdo c
     childMeasurement: 'Su hijo/a',
     headCircOptional: 'Circunferencia cefálica (opcional)',
     
-    // BMI Categories (CDC)
+    // BMI Categories (Percentiles)
     bmiForAge: 'IMC para la edad',
+    bmiPronouncedDeficit: 'Déficit de peso pronunciado',
+    bmiNormalWeight: 'Peso normal',
+    bmiOverweightRisk: 'Riesgo de sobrepeso',
     bmiUnderweight: 'Bajo peso',
     bmiHealthy: 'Peso saludable',
     bmiOverweight: 'Sobrepeso',
     bmiObesity: 'Obesidad',
     bmiSevereObesity: 'Obesidad severa',
-    bmiAvailableFrom2: 'El IMC para la edad se calcula para niños de 2 a 20 años',
+    bmiAvailableFrom2: 'El IMC para la edad se calcula para niños de 5 a 19 años',
   },
 };
 

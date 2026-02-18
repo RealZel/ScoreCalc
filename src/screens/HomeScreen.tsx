@@ -452,18 +452,17 @@ export function HomeScreen() {
                   <View style={[styles.statusIndicator, { backgroundColor: result.bmiColor || '#388E3C' }]} />
                   <View style={styles.resultContent}>
                     <Text style={styles.resultLabel}>
-                      {t('bmi')}: {result.bmi.toFixed(1)} kg/m²
+                      {t('bmiForAge')}: {result.bmi.toFixed(1)} kg/m²
                     </Text>
                     {result.bmiPercentile !== undefined ? (
                       <Text style={styles.resultValue}>
                         Z: {formatZScore(result.bmiZScore)} | P: {formatPercentile(result.bmiPercentile)}%
                         {result.bmiCategory && (
                           <Text style={{ color: result.bmiColor }}>
-                            {' '}({result.bmiCategory === 'underweight' ? t('bmiUnderweight') :
-                             result.bmiCategory === 'healthy' ? t('bmiHealthy') :
-                             result.bmiCategory === 'overweight' ? t('bmiOverweight') :
-                             result.bmiCategory === 'obesity' ? t('bmiObesity') :
-                             t('bmiSevereObesity')})
+                            {' '}({result.bmiCategory === 'pronounced-deficit' ? t('bmiPronouncedDeficit') :
+                             result.bmiCategory === 'normal-weight' ? t('bmiNormalWeight') :
+                             result.bmiCategory === 'overweight-risk' ? t('bmiOverweightRisk') :
+                             t('bmiOverweight')})
                           </Text>
                         )}
                       </Text>
