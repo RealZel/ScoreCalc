@@ -6,6 +6,8 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
+  Alert,
+  Linking,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { useApp } from '../context/AppContext';
@@ -19,12 +21,22 @@ type Gender = 'male' | 'female';
 
 export function ChartsScreen() {
   const { t, lastMeasurement } = useApp();
+  const whoSourceUrl = 'https://www.who.int/tools/child-growth-standards';
   const [chartType, setChartType] = useState<ChartType>('length');
   const [gender, setGender] = useState<Gender>(lastMeasurement?.gender || 'male');
 
+  const handleOpenWhoSource = async () => {
+    const canOpen = await Linking.canOpenURL(whoSourceUrl);
+    if (!canOpen) {
+      Alert.alert('', whoSourceUrl);
+      return;
+    }
+    await Linking.openURL(whoSourceUrl);
+  };
+
   const fullChartData = generateGrowthCurveData(gender, chartType);
   
-  // Use full 0-24 months range
+  // Use full WHO range available in app (0-60 months)
   const chartData = fullChartData;
   
   // Select representative points for display (every 3 months to avoid overcrowding)
@@ -37,7 +49,7 @@ export function ChartsScreen() {
   // Get child's measurement point if available, matching gender, and within age range
   const childPoint = useMemo(() => {
     if (!lastMeasurement || lastMeasurement.gender !== gender) return null;
-    if (lastMeasurement.ageInMonths < 0 || lastMeasurement.ageInMonths > 24) return null;
+    if (lastMeasurement.ageInMonths < 0 || lastMeasurement.ageInMonths > 60) return null;
     
     let value = 0;
     switch (chartType) {
@@ -227,7 +239,7 @@ export function ChartsScreen() {
                 const paddingBottom = 40;
                 
                 const minAge = filteredData[0]?.age || 0;
-                const maxAge = filteredData[filteredData.length - 1]?.age || 24;
+                const maxAge = filteredData[filteredData.length - 1]?.age || 60;
                 const allValues = [
                   ...filteredData.map(d => d.sd2neg),
                   ...filteredData.map(d => d.sd2),
@@ -274,6 +286,16 @@ export function ChartsScreen() {
               <Text style={styles.legendText}>±2 SD</Text>
             </View>
           </View>
+        </View>
+
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>{t('medicalInfoTitle')}</Text>
+          <Text style={styles.infoText}>{t('basedOnWho')}</Text>
+          <Text style={styles.infoText}>{t('detailsAtSource')}</Text>
+          <TouchableOpacity onPress={handleOpenWhoSource}>
+            <Text style={styles.sourceLink}>{whoSourceUrl}</Text>
+          </TouchableOpacity>
+          <Text style={styles.disclaimerText}>{t('consultDoctorReminder')}</Text>
         </View>
       </ScrollView>
     </View>
@@ -408,6 +430,36 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     marginBottom: 16,
+  },
+  infoSection: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+  },
+  infoTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 6,
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
+    lineHeight: 18,
+  },
+  sourceLink: {
+    fontSize: 12,
+    color: '#4A90D9',
+    textDecorationLine: 'underline',
+    marginBottom: 8,
+  },
+  disclaimerText: {
+    fontSize: 12,
+    color: '#666',
+    lineHeight: 18,
   },
   legendRow: {
     flexDirection: 'row',

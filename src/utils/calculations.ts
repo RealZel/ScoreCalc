@@ -1,6 +1,19 @@
+import {
+  lengthForAgeBoysNew,
+  lengthForAgeGirlsNew,
+  weightForAgeBoysNew,
+  weightForAgeGirlsNew,
+  headCircForAgeBoysNew,
+  headCircForAgeGirlsNew,
+} from './whoLms0to60';
+import {
+  bmiForAgeBoysDaily0to5,
+  bmiForAgeGirlsDaily0to5,
+} from './whoBmiDaily0to5';
+
 // WHO Child Growth Standards - Official LMS Data from CDC/WHO
 // Data source: https://www.cdc.gov/growthcharts/who-data-files.htm
-// Age is in MONTHS (0-24 months for most indicators)
+// Age is in MONTHS (0-60 months for core WHO indicators in this app)
 //
 // LMS Formula (from CDC):
 // Z-score = ((X/M)^L - 1) / (L × S), when L ≠ 0
@@ -853,10 +866,13 @@ export function calculateBMI(weightKg: number, heightCm: number): number {
  * - overweight
  */
 export type BMICategory =
-  | 'pronounced-deficit' // <3rd percentile
-  | 'normal-weight'      // 3rd to <85th percentile
-  | 'overweight-risk'    // 85th to <97th percentile
-  | 'overweight';        // ≥97th percentile
+  | 'pronounced-deficit' // z < -3 SD (severely wasted / severe thinness)
+  | 'underweight'        // -3 ≤ z < -2 SD (wasted / thinness)
+  | 'underweight-risk'   // -2 ≤ z < -1 SD (possible risk of underweight)
+  | 'normal-weight'      // -1 ≤ z ≤ +1 SD
+  | 'overweight-risk'    // +1 < z ≤ +2 SD (0-5y: possible risk of overweight)
+  | 'overweight'         // +2 < z ≤ +3 SD (0-5y) or +1 < z ≤ +2 SD (5-19y)
+  | 'obese';             // z > +3 SD (0-5y) or z > +2 SD (5-19y)
 
 export interface BMIResult {
   bmi: number;
@@ -864,6 +880,76 @@ export interface BMIResult {
   percentile: number;
   category: BMICategory;
   color: string;
+}
+
+/**
+ * Calculate BMI-for-age z-score and percentile using WHO Child Growth Standards
+ * Valid for ages 0-60 months
+ */
+export function calculateBMIForAge0to60(
+  bmi: number,
+  ageInDays: number,
+  gender: 'male' | 'female'
+): BMIResult | null {
+  if (ageInDays < 0 || ageInDays > 1856) {
+    return null;
+  }
+
+  if (bmi <= 0) {
+    return null;
+  }
+
+  const bmiData = gender === 'male' ? bmiForAgeBoysDaily0to5 : bmiForAgeGirlsDaily0to5;
+  const lms = interpolateLMS(bmiData, ageInDays);
+
+  const rawZ = calculateZScore(bmi, lms.L, lms.M, lms.S);
+  const zScore = restrictZScore(rawZ, bmi, lms.L, lms.M, lms.S);
+  const percentile = zScoreToPercentile(zScore);
+  
+  // WHO Child Growth Standards 0-5 years BMI-for-age interpretation:
+  // z < -3 SD:          Severely wasted
+  // -3 ≤ z < -2 SD:     Wasted
+  // -2 ≤ z < -1 SD:     Possible risk of underweight
+  // -1 ≤ z ≤ +1 SD:     Normal
+  // +1 < z ≤ +2 SD:     Possible risk of overweight
+  // +2 < z ≤ +3 SD:     Overweight
+  // z > +3 SD:           Obese
+  let category: BMICategory;
+  let color: string;
+
+  // Round to 4 decimals to avoid floating-point boundary issues
+  const zr = Math.round(zScore * 10000) / 10000;
+
+  if (zr < -3) {
+    category = 'pronounced-deficit';
+    color = '#D32F2F';
+  } else if (zr < -2) {
+    category = 'underweight';
+    color = '#F57C00';
+  } else if (zr < -1) {
+    category = 'underweight-risk';
+    color = '#FFA726';
+  } else if (zr > 3) {
+    category = 'obese';
+    color = '#D32F2F';
+  } else if (zr > 2) {
+    category = 'overweight';
+    color = '#E64A19';
+  } else if (zr > 1) {
+    category = 'overweight-risk';
+    color = '#FFA726';
+  } else {
+    category = 'normal-weight';
+    color = '#388E3C';
+  }
+
+  return {
+    bmi,
+    zScore,
+    percentile,
+    category,
+    color,
+  };
 }
 
 /**
@@ -902,19 +988,34 @@ export function calculateBMIForAge(
   // Calculate percentile
   const percentile = zScoreToPercentile(zScore);
   
-  // Determine category based on percentile bands
+  // WHO Reference 2007 BMI-for-age 5-19 years interpretation:
+  // z < -3 SD:          Severe thinness
+  // -3 ≤ z < -2 SD:     Thinness
+  // -2 ≤ z < -1 SD:     Possible risk of underweight
+  // -1 ≤ z ≤ +1 SD:     Normal
+  // +1 < z ≤ +2 SD:     Overweight
+  // z > +2 SD:           Obese
   let category: BMICategory;
   let color: string;
+
+  // Round to 4 decimals to avoid floating-point boundary issues
+  const zr = Math.round(zScore * 10000) / 10000;
   
-  if (percentile < 3) {
+  if (zr < -3) {
     category = 'pronounced-deficit';
     color = '#D32F2F'; // Red
-  } else if (percentile >= 97) {
-    category = 'overweight';
-    color = '#D32F2F'; // Red
-  } else if (percentile >= 85) {
-    category = 'overweight-risk';
+  } else if (zr < -2) {
+    category = 'underweight';
     color = '#F57C00'; // Orange
+  } else if (zr < -1) {
+    category = 'underweight-risk';
+    color = '#FFA726'; // Light Orange
+  } else if (zr > 2) {
+    category = 'obese';
+    color = '#D32F2F'; // Red
+  } else if (zr > 1) {
+    category = 'overweight';
+    color = '#E64A19'; // Deep Orange
   } else {
     category = 'normal-weight';
     color = '#388E3C'; // Green
@@ -936,16 +1037,50 @@ export function interpretZScore(zscore: number): {
   status: 'severely-low' | 'low' | 'normal' | 'high' | 'severely-high';
   color: string;
 } {
-  if (zscore < -3) {
+  // Round to 4 decimals to avoid floating-point boundary issues
+  const zr = Math.round(zscore * 10000) / 10000;
+  if (zr < -3) {
     return { status: 'severely-low', color: '#D32F2F' }; // Red
-  } else if (zscore < -2) {
+  } else if (zr < -2) {
     return { status: 'low', color: '#F57C00' }; // Orange
-  } else if (zscore <= 2) {
+  } else if (zr <= 2) {
     return { status: 'normal', color: '#388E3C' }; // Green
-  } else if (zscore <= 3) {
+  } else if (zr <= 3) {
     return { status: 'high', color: '#F57C00' }; // Orange
   } else {
     return { status: 'severely-high', color: '#D32F2F' }; // Red
+  }
+}
+
+/**
+ * Interpret Weight-for-Length/Height Z-score per WHO cutoffs.
+ * WHO uses asymmetric thresholds: -3, -2 for lower; +1, +2, +3 for upper.
+ *
+ * z < -3:       Severely wasted
+ * -3 ≤ z < -2:  Wasted
+ * -2 ≤ z ≤ +1:  Normal
+ * +1 < z ≤ +2:  Possible risk of overweight
+ * +2 < z ≤ +3:  Overweight
+ * z > +3:       Obese
+ */
+export function interpretWFLZScore(zscore: number): {
+  status: 'severely-low' | 'low' | 'normal' | 'high' | 'very-high' | 'severely-high';
+  color: string;
+} {
+  // Round to 4 decimals to avoid floating-point boundary issues
+  const zr = Math.round(zscore * 10000) / 10000;
+  if (zr < -3) {
+    return { status: 'severely-low', color: '#D32F2F' }; // Red
+  } else if (zr < -2) {
+    return { status: 'low', color: '#F57C00' }; // Orange
+  } else if (zr <= 1) {
+    return { status: 'normal', color: '#388E3C' }; // Green
+  } else if (zr <= 2) {
+    return { status: 'high', color: '#F57C00' }; // Orange — possible risk of overweight
+  } else if (zr <= 3) {
+    return { status: 'very-high', color: '#E64A19' }; // Deep Orange — overweight
+  } else {
+    return { status: 'severely-high', color: '#D32F2F' }; // Red — obese
   }
 }
 
@@ -1015,12 +1150,12 @@ export function calculateChildGrowth(
     ageInMonths,
   };
   
-  // WHO data covers 0-24 months
-  const maxMonths = 24;
+  // WHO Child Growth Standards data used in app covers 0-60 months
+  const maxMonths = 60;
   
   // Length-for-age (0-24 months)
   if (lengthCm > 0 && ageInMonths >= 0 && ageInMonths <= maxMonths) {
-    const lengthData = gender === 'male' ? lengthForAgeBoys : lengthForAgeGirls;
+    const lengthData = gender === 'male' ? lengthForAgeBoysNew : lengthForAgeGirlsNew;
     const lms = interpolateLMS(lengthData, ageInMonths);
     const rawZ = calculateZScore(lengthCm, lms.L, lms.M, lms.S);
     result.lengthZScore = restrictZScore(rawZ, lengthCm, lms.L, lms.M, lms.S);
@@ -1032,7 +1167,7 @@ export function calculateChildGrowth(
   
   // Weight-for-age (0-24 months)
   if (weightKg > 0 && ageInMonths >= 0 && ageInMonths <= maxMonths) {
-    const weightData = gender === 'male' ? weightForAgeBoys : weightForAgeGirls;
+    const weightData = gender === 'male' ? weightForAgeBoysNew : weightForAgeGirlsNew;
     const lms = interpolateLMS(weightData, ageInMonths);
     const rawZ = calculateZScore(weightKg, lms.L, lms.M, lms.S);
     result.weightZScore = restrictZScore(rawZ, weightKg, lms.L, lms.M, lms.S);
@@ -1042,21 +1177,21 @@ export function calculateChildGrowth(
     result.weightColor = interpretation.color;
   }
   
-  // Weight-for-length (45-110 cm)
-  if (weightKg > 0 && lengthCm >= 45 && lengthCm <= 110) {
+  // Weight-for-length/height (WHO 0-5 years)
+  if (weightKg > 0 && lengthCm >= 45 && lengthCm <= 110 && ageInMonths >= 0 && ageInMonths <= maxMonths) {
     const wflData = gender === 'male' ? weightForLengthBoys : weightForLengthGirls;
     const lms = interpolateLMS(wflData, lengthCm);
     const rawZ = calculateZScore(weightKg, lms.L, lms.M, lms.S);
     result.weightForLengthZScore = restrictZScore(rawZ, weightKg, lms.L, lms.M, lms.S);
     result.weightForLengthPercentile = zScoreToPercentile(result.weightForLengthZScore);
-    const interpretation = interpretZScore(result.weightForLengthZScore);
+    const interpretation = interpretWFLZScore(result.weightForLengthZScore);
     result.weightForLengthStatus = interpretation.status;
     result.weightForLengthColor = interpretation.color;
   }
   
   // Head circumference-for-age (0-24 months)
   if (headCircCm > 0 && ageInMonths >= 0 && ageInMonths <= maxMonths) {
-    const headCircData = gender === 'male' ? headCircForAgeBoys : headCircForAgeGirls;
+    const headCircData = gender === 'male' ? headCircForAgeBoysNew : headCircForAgeGirlsNew;
     const lms = interpolateLMS(headCircData, ageInMonths);
     const rawZ = calculateZScore(headCircCm, lms.L, lms.M, lms.S);
     result.headCircZScore = restrictZScore(rawZ, headCircCm, lms.L, lms.M, lms.S);
@@ -1066,17 +1201,27 @@ export function calculateChildGrowth(
     result.headCircColor = interpretation.color;
   }
   
-  // Calculate BMI
-  if (weightKg > 0 && lengthCm > 0) {
+  // Calculate BMI for ages 0-20 years (0-240 months)
+  if (weightKg > 0 && lengthCm > 0 && ageInMonths >= 0 && ageInMonths <= 240) {
     result.bmi = calculateBMI(weightKg, lengthCm);
-    
-    // Calculate BMI-for-age for children 5-19 years (61-228 months)
-    const bmiResult = calculateBMIForAge(result.bmi, ageInMonths, gender);
-    if (bmiResult) {
-      result.bmiZScore = bmiResult.zScore;
-      result.bmiPercentile = bmiResult.percentile;
-      result.bmiCategory = bmiResult.category;
-      result.bmiColor = bmiResult.color;
+
+    // BMI-for-age: WHO 0-5 years (0-60 months), WHO reference 5-19 years (61-228 months)
+    if (ageInMonths <= 60) {
+      const bmiResult0to60 = calculateBMIForAge0to60(result.bmi, ageInDays, gender);
+      if (bmiResult0to60) {
+        result.bmiZScore = bmiResult0to60.zScore;
+        result.bmiPercentile = bmiResult0to60.percentile;
+        result.bmiCategory = bmiResult0to60.category;
+        result.bmiColor = bmiResult0to60.color;
+      }
+    } else {
+      const bmiResult = calculateBMIForAge(result.bmi, ageInMonths, gender);
+      if (bmiResult) {
+        result.bmiZScore = bmiResult.zScore;
+        result.bmiPercentile = bmiResult.percentile;
+        result.bmiCategory = bmiResult.category;
+        result.bmiColor = bmiResult.color;
+      }
     }
   }
   
@@ -1094,13 +1239,13 @@ export function generateGrowthCurveData(
   
   switch (chartType) {
     case 'length':
-      data = gender === 'male' ? lengthForAgeBoys : lengthForAgeGirls;
+      data = gender === 'male' ? lengthForAgeBoysNew : lengthForAgeGirlsNew;
       break;
     case 'weight':
-      data = gender === 'male' ? weightForAgeBoys : weightForAgeGirls;
+      data = gender === 'male' ? weightForAgeBoysNew : weightForAgeGirlsNew;
       break;
     case 'headCirc':
-      data = gender === 'male' ? headCircForAgeBoys : headCircForAgeGirls;
+      data = gender === 'male' ? headCircForAgeBoysNew : headCircForAgeGirlsNew;
       break;
   }
   
@@ -1122,5 +1267,5 @@ export function generateGrowthCurveData(
 }
 
 // Export old names for backward compatibility
-export const heightForAgeBoys = lengthForAgeBoys;
-export const heightForAgeGirls = lengthForAgeGirls;
+export const heightForAgeBoys = lengthForAgeBoysNew;
+export const heightForAgeGirls = lengthForAgeGirlsNew;

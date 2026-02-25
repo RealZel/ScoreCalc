@@ -8,6 +8,7 @@ import {
   ScrollView,
   Platform,
   Alert,
+  Linking,
   KeyboardAvoidingView,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
@@ -16,6 +17,7 @@ import { calculateChildGrowth, CalculationResult } from '../utils/calculations';
 
 export function HomeScreen() {
   const { t, isMetric, language, setLastMeasurement } = useApp();
+  const whoSourceUrl = 'https://www.who.int/tools/child-growth-standards';
   
   const [birthDate, setBirthDate] = useState<Date>(new Date());
   const [measurementDate, setMeasurementDate] = useState<Date>(new Date());
@@ -36,27 +38,32 @@ export function HomeScreen() {
   const [inputWeightKg, setInputWeightKg] = useState<number>(0);
   const [inputHeadCircCm, setInputHeadCircCm] = useState<number>(0);
 
+  const parseLocalizedNumber = useCallback((input: string): number => {
+    const normalizedInput = input.replace(',', '.').trim();
+    const numValue = parseFloat(normalizedInput);
+    return isNaN(numValue) ? 0 : numValue;
+  }, []);
+
   const convertToMetric = useCallback((value: string, feet: string, type: 'height' | 'weight' | 'headCirc'): number => {
     if (isMetric) {
-      const numValue = parseFloat(value);
-      return isNaN(numValue) ? 0 : numValue;
+      return parseLocalizedNumber(value);
     }
     
     // Convert from imperial to metric
     if (type === 'height') {
-      const feetValue = parseFloat(feet) || 0;
-      const inchesValue = parseFloat(value) || 0;
+      const feetValue = parseLocalizedNumber(feet);
+      const inchesValue = parseLocalizedNumber(value);
       const totalInches = feetValue * 12 + inchesValue;
       return totalInches * 2.54; // inches to cm
     } else if (type === 'headCirc') {
       // Head circumference: only inches to cm
-      const numValue = parseFloat(value);
-      return isNaN(numValue) ? 0 : numValue * 2.54;
+      const numValue = parseLocalizedNumber(value);
+      return numValue * 2.54;
     } else {
-      const numValue = parseFloat(value);
-      return isNaN(numValue) ? 0 : numValue * 0.453592; // pounds to kg
+      const numValue = parseLocalizedNumber(value);
+      return numValue * 0.453592; // pounds to kg
     }
-  }, [isMetric]);
+  }, [isMetric, parseLocalizedNumber]);
 
   const formatDate = (date: Date): string => {
     const day = date.getDate().toString().padStart(2, '0');
@@ -138,7 +145,7 @@ export function HomeScreen() {
     }
     
     const ageInDays = Math.floor((measurementDate.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24));
-    if (ageInDays > 6935) { // ~19 years
+    if (ageInDays > 7305) { // ~20 years
       Alert.alert('', t('childTooOld'));
       return;
     }
@@ -184,6 +191,15 @@ export function HomeScreen() {
     setHeadCircInches('');
     setResult(null);
     setLastMeasurement(null);
+  };
+
+  const handleOpenWhoSource = async () => {
+    const canOpen = await Linking.canOpenURL(whoSourceUrl);
+    if (!canOpen) {
+      Alert.alert('', whoSourceUrl);
+      return;
+    }
+    await Linking.openURL(whoSourceUrl);
   };
 
   const formatZScore = (zscore: number | undefined): string => {
@@ -460,8 +476,11 @@ export function HomeScreen() {
                         {result.bmiCategory && (
                           <Text style={{ color: result.bmiColor }}>
                             {' '}({result.bmiCategory === 'pronounced-deficit' ? t('bmiPronouncedDeficit') :
+                             result.bmiCategory === 'underweight' ? t('bmiUnderweight') :
+                             result.bmiCategory === 'underweight-risk' ? t('bmiUnderweightRisk') :
                              result.bmiCategory === 'normal-weight' ? t('bmiNormalWeight') :
                              result.bmiCategory === 'overweight-risk' ? t('bmiOverweightRisk') :
+                             result.bmiCategory === 'obese' ? t('bmiObesity') :
                              t('bmiOverweight')})
                           </Text>
                         )}
@@ -517,6 +536,16 @@ export function HomeScreen() {
               </View>
             </View>
           )}
+
+          <View style={styles.infoSection}>
+            <Text style={styles.infoTitle}>{t('medicalInfoTitle')}</Text>
+            <Text style={styles.infoText}>{t('basedOnWho')}</Text>
+            <Text style={styles.infoText}>{t('detailsAtSource')}</Text>
+            <TouchableOpacity onPress={handleOpenWhoSource}>
+              <Text style={styles.sourceLink}>{whoSourceUrl}</Text>
+            </TouchableOpacity>
+            <Text style={styles.disclaimerText}>{t('consultDoctorReminder')}</Text>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
@@ -709,6 +738,42 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     marginBottom: 8,
+  },
+  infoSection: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 8,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  infoTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 6,
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 6,
+    lineHeight: 18,
+  },
+  sourceLink: {
+    fontSize: 12,
+    color: '#4A90D9',
+    textDecorationLine: 'underline',
+    marginBottom: 8,
+  },
+  disclaimerText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+    lineHeight: 18,
   },
   clearButton: {
     flex: 1,

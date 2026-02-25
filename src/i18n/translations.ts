@@ -19,6 +19,10 @@ export const translations = {
     weight: 'Weight',
     headCircumference: 'Head Circumference',
     calculate: 'Calculate',
+    medicalInfoTitle: 'Sources & Medical Notice',
+    basedOnWho: 'Calculations are based on WHO Child Growth Standards.',
+    detailsAtSource: 'For more details, see the official WHO source:',
+    consultDoctorReminder: 'Important: This app is for informational purposes only and does not replace professional medical advice. Consult a physician when using these results and before making medical decisions.',
     
     // Results
     bodyLength: 'Body length',
@@ -82,13 +86,15 @@ In most clinical situations, z-score values from -2 to +2 are considered normal.
 Z-score values are calculated based on L (Box-Cox transformation coefficient to normality), M (median), S (coefficient of variation of the standard indicator) values according to WHO child growth standards.
 
 Percentile values are calculated from the obtained z-score value.`,
-    calculationDescription2: `Z-score and percentile values for body length or height are calculated per day of life for children under 5 years old (up to day 1856) and per month of life for children over 5 years old (from month 61 to month 228).
+    calculationDescription2: `Z-score and percentile values for body length or height are calculated using WHO standards for children aged 0-60 months.
 
-Z-score and percentile values for body weight are calculated per day of life for children under 5 years old (up to day 1856) and per month of life for children over 5 years old and under 10 years old (from month 61 to month 120).
+Z-score and percentile values for body weight are calculated using WHO standards for children aged 0-60 months.
 
-Z-score and percentile values for body weight to body length or height ratio are calculated per day of life for children under 5 years old (up to day 1856) for children with body length or height from 45 cm to 110 cm.
+Z-score and percentile values for body weight to body length are calculated using WHO standards for body length from 45 cm to 110 cm.
 
-Z-score and percentile values for head circumference are calculated per day of life for children under 5 years old (up to day 1856).`,
+Z-score and percentile values for head circumference are calculated using WHO standards for children aged 0-60 months.
+
+BMI-for-age z-score and percentile are calculated using WHO standards for 0-5 years and WHO reference data for 5-19 years.`,
     
     // Terms of Use
     termsTitle: 'Terms of Use & Disclaimer',
@@ -129,7 +135,7 @@ By using this application, you signify your acceptance of these terms. If you do
     pleaseEnterAllFields: 'Please enter all required fields',
     invalidDate: 'Invalid date',
     invalidValue: 'Invalid value',
-    childTooOld: 'Child is too old for this calculation (max 19 years)',
+    childTooOld: 'Calculations are available up to 20 years of age',
     
     // Clear
     clear: 'Clear',
@@ -148,6 +154,7 @@ By using this application, you signify your acceptance of these terms. If you do
     // BMI Categories (Percentiles)
     bmiForAge: 'BMI-for-Age',
     bmiPronouncedDeficit: 'Pronounced weight deficit',
+    bmiUnderweightRisk: 'Risk of underweight',
     bmiNormalWeight: 'Normal weight',
     bmiOverweightRisk: 'Risk of overweight',
     bmiUnderweight: 'Underweight',
@@ -155,7 +162,7 @@ By using this application, you signify your acceptance of these terms. If you do
     bmiOverweight: 'Overweight',
     bmiObesity: 'Obesity',
     bmiSevereObesity: 'Severe obesity',
-    bmiAvailableFrom2: 'BMI-for-age is calculated for children aged 5-19 years',
+    bmiAvailableFrom2: 'BMI-for-age z-score and percentile are calculated for ages 0-5 and 5-19 years',
   },
   ru: {
     // Language Selection
@@ -177,6 +184,10 @@ By using this application, you signify your acceptance of these terms. If you do
     weight: 'Вес',
     headCircumference: 'Окружность головы',
     calculate: 'Рассчитать',
+    medicalInfoTitle: 'Источники и медицинское предупреждение',
+    basedOnWho: 'Расчёты основаны на стандартах роста детей ВОЗ (WHO Child Growth Standards).',
+    detailsAtSource: 'Для более подробной информации смотрите официальный источник ВОЗ:',
+    consultDoctorReminder: 'Важно: приложение носит информационный характер и не заменяет консультацию врача. Обязательно проконсультируйтесь с медицинским специалистом при использовании результатов и перед принятием медицинских решений.',
     
     // Results
     bodyLength: 'Длина тела',
@@ -240,13 +251,15 @@ By using this application, you signify your acceptance of these terms. If you do
 Значения z-score вычисляются исходя из значений L (коэффициент трансформации Бокса-Кокса к нормальности), M (медиана), S (коэффициент вариации стандартного показателя) по данным норм для оценки физического развития детей ВОЗ.
 
 Значения перцентилей вычисляются из полученного значения z-score.`,
-    calculationDescription2: `Значения z-score и перцентиля для длины тела или роста вычисляются на день жизни для детей младше 5 лет (до 1856-го дня жизни) и на месяц жизни для детей старше 5 лет (с 61-го по 228-й месяц жизни).
+    calculationDescription2: `Значения z-score и перцентиля для длины тела или роста рассчитываются по стандартам ВОЗ для детей 0-60 месяцев.
 
-Значения z-score и перцентиля для массы тела вычисляются на день жизни для детей младше 5 лет (до 1856-го дня жизни) и на месяц жизни для детей старше 5 лет и младше 10 лет (с 61-го по 120-й месяц жизни).
+Значения z-score и перцентиля для массы тела рассчитываются по стандартам ВОЗ для детей 0-60 месяцев.
 
-Значения z-score и перцентиля для отношения массы тела к длине тела или росту вычисляются на день жизни для детей младше 5 лет (до 1856-го дня жизни) для детей с длиной тела или ростом от 45 см и до 110 см.
+Значения z-score и перцентиля для отношения массы тела к длине тела рассчитываются по стандартам ВОЗ при длине тела от 45 см до 110 см.
 
-Значения z-score и перцентиля для окружности головы вычисляются на день жизни для детей младше 5 лет (до 1856-го дня жизни).`,
+Значения z-score и перцентиля для окружности головы рассчитываются по стандартам ВОЗ для детей 0-60 месяцев.
+
+Z-score и перцентиль ИМТ по возрасту рассчитываются по стандартам ВОЗ для 0-5 лет и по референсам ВОЗ для 5-19 лет.`,
     
     // Terms of Use
     termsTitle: 'Правила использования и отказ от ответственности',
@@ -287,7 +300,7 @@ By using this application, you signify your acceptance of these terms. If you do
     pleaseEnterAllFields: 'Пожалуйста, заполните все обязательные поля',
     invalidDate: 'Неверная дата',
     invalidValue: 'Неверное значение',
-    childTooOld: 'Ребёнок слишком взрослый для расчёта (макс. 19 лет)',
+    childTooOld: 'Расчёты доступны до 20 лет',
     
     // Clear
     clear: 'Очистить',
@@ -306,6 +319,7 @@ By using this application, you signify your acceptance of these terms. If you do
     // BMI Categories (Перцентили)
     bmiForAge: 'ИМТ по возрасту',
     bmiPronouncedDeficit: 'Выраженный дефицит массы тела',
+    bmiUnderweightRisk: 'Риск недостаточной массы тела',
     bmiNormalWeight: 'Нормальная масса тела',
     bmiOverweightRisk: 'Риск избыточной массы тела',
     bmiUnderweight: 'Дефицит массы тела',
@@ -313,7 +327,7 @@ By using this application, you signify your acceptance of these terms. If you do
     bmiOverweight: 'Избыточный вес',
     bmiObesity: 'Ожирение',
     bmiSevereObesity: 'Тяжёлое ожирение',
-    bmiAvailableFrom2: 'ИМТ по возрасту рассчитывается для детей от 5 до 19 лет',
+    bmiAvailableFrom2: 'Z-score и перцентиль ИМТ по возрасту рассчитываются для 0-5 и 5-19 лет',
   },
   es: {
     // Language Selection
@@ -335,6 +349,10 @@ By using this application, you signify your acceptance of these terms. If you do
     weight: 'Peso',
     headCircumference: 'Circunferencia cefálica',
     calculate: 'Calcular',
+    medicalInfoTitle: 'Fuentes y aviso médico',
+    basedOnWho: 'Los cálculos se basan en los estándares de crecimiento infantil de la OMS (WHO Child Growth Standards).',
+    detailsAtSource: 'Para más información, consulte la fuente oficial de la OMS:',
+    consultDoctorReminder: 'Importante: esta aplicación es solo para fines informativos y no sustituye el consejo médico profesional. Consulte a un médico al usar estos resultados y antes de tomar decisiones médicas.',
     
     // Results
     bodyLength: 'Longitud corporal',
@@ -398,13 +416,15 @@ En la mayoría de las situaciones clínicas, los valores de puntuación z de -2 
 Los valores de puntuación z se calculan basándose en los valores L (coeficiente de transformación de Box-Cox a normalidad), M (mediana), S (coeficiente de variación del indicador estándar) según los estándares de crecimiento infantil de la OMS.
 
 Los valores de percentil se calculan a partir del valor de puntuación z obtenido.`,
-    calculationDescription2: `Los valores de puntuación z y percentil para la longitud o estatura corporal se calculan por día de vida para niños menores de 5 años (hasta el día 1856) y por mes de vida para niños mayores de 5 años (del mes 61 al 228).
+    calculationDescription2: `Los valores de puntuación z y percentil para la longitud o estatura se calculan con estándares de la OMS para niños de 0 a 60 meses.
 
-Los valores de puntuación z y percentil para el peso corporal se calculan por día de vida para niños menores de 5 años (hasta el día 1856) y por mes de vida para niños mayores de 5 años y menores de 10 años (del mes 61 al 120).
+Los valores de puntuación z y percentil para el peso se calculan con estándares de la OMS para niños de 0 a 60 meses.
 
-Los valores de puntuación z y percentil para la relación peso/longitud corporal se calculan por día de vida para niños menores de 5 años (hasta el día 1856) con longitud corporal de 45 cm a 110 cm.
+Los valores de puntuación z y percentil para la relación peso/talla se calculan con estándares de la OMS para longitudes de 45 cm a 110 cm.
 
-Los valores de puntuación z y percentil para la circunferencia cefálica se calculan por día de vida para niños menores de 5 años (hasta el día 1856).`,
+Los valores de puntuación z y percentil para la circunferencia cefálica se calculan con estándares de la OMS para niños de 0 a 60 meses.
+
+La puntuación z y el percentil del IMC para la edad se calculan con estándares de la OMS para 0-5 años y con referencias de la OMS para 5-19 años.`,
     
     // Terms of Use
     termsTitle: 'Términos de uso y exención de responsabilidad',
@@ -445,7 +465,7 @@ Al usar esta aplicación, usted acepta estos términos. Si no está de acuerdo c
     pleaseEnterAllFields: 'Por favor complete todos los campos requeridos',
     invalidDate: 'Fecha inválida',
     invalidValue: 'Valor inválido',
-    childTooOld: 'El niño es demasiado mayor para este cálculo (máx. 19 años)',
+    childTooOld: 'Los cálculos están disponibles hasta los 20 años',
     
     // Clear
     clear: 'Borrar',
@@ -464,6 +484,7 @@ Al usar esta aplicación, usted acepta estos términos. Si no está de acuerdo c
     // BMI Categories (Percentiles)
     bmiForAge: 'IMC para la edad',
     bmiPronouncedDeficit: 'Déficit de peso pronunciado',
+    bmiUnderweightRisk: 'Riesgo de bajo peso',
     bmiNormalWeight: 'Peso normal',
     bmiOverweightRisk: 'Riesgo de sobrepeso',
     bmiUnderweight: 'Bajo peso',
@@ -471,7 +492,7 @@ Al usar esta aplicación, usted acepta estos términos. Si no está de acuerdo c
     bmiOverweight: 'Sobrepeso',
     bmiObesity: 'Obesidad',
     bmiSevereObesity: 'Obesidad severa',
-    bmiAvailableFrom2: 'El IMC para la edad se calcula para niños de 5 a 19 años',
+    bmiAvailableFrom2: 'La puntuación z y el percentil del IMC para la edad se calculan para 0-5 y 5-19 años',
   },
 };
 
