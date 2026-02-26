@@ -102,8 +102,8 @@ Your contribution helps cover development time, infrastructure, and future impro
 **PayPal**  
 https://paypal.me/mysteryzel  
 
-**Crypto (USDT – ERC20)**  
-Network: ERC20  
+**Crypto (USDT – TRC20)**  
+Network: TRC20  (TRON)
 Address: TKxTNejxL5vVVjXcDZQBgHZZZLy9LvjySe  
 
 ---
