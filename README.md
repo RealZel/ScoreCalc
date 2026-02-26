@@ -1,7 +1,7 @@
 # ScoreCalc - Child Growth Calculator
 
 ScoreCalc is a React Native mobile app for tracking and evaluating child growth.
-The app is available for **iOS**.
+The app is available for **iOS** and **Android**.
 
 [![Download on the App Store](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](https://apps.apple.com/ru/app/medscorecalc/id6759158540)
 
@@ -91,3 +91,20 @@ This app is for educational and screening support purposes only and does not rep
 ## License
 
 Proprietary - All rights reserved.
+
+## 💖 Support the Project
+
+If this project is useful to you, you can support its development with a donation.  
+Your contribution helps cover development time, infrastructure, and future improvements.
+
+### 💳 Donation Options
+
+**PayPal**  
+https://paypal.me/mysteryzel  
+
+**Crypto (USDT – ERC20)**  
+Network: ERC20  
+Address: TKxTNejxL5vVVjXcDZQBgHZZZLy9LvjySe  
+
+---
+Thank you for your support! 🙌
